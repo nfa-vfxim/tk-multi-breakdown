@@ -58,8 +58,10 @@ class BreakdownSceneOperations(Hook):
             hou.lopNodeTypeCategory(), "reference"
         ).instances()
 
-        sublayer_nodes = hou.nodeType(
-            hou.lopNodeTypeCategory(), "sublayer"
+        sublayer_nodes = hou.nodeType(hou.lopNodeTypeCategory(), "sublayer").instances()
+
+        materialx_image_nodes = hou.nodeType(
+            hou.vopNodeTypeCategory(), "mtlximage"
         ).instances()
 
         # refine tuple of all regular file nodes to exclude file nodes inside locked digital asset
@@ -106,6 +108,18 @@ class BreakdownSceneOperations(Hook):
 
             items.append(
                 {"node": sublayer_node.path(), "type": "sublayer", "path": file_path}
+            )
+
+        for materialx_image_node in materialx_image_nodes:
+            file_parm = materialx_image_node.parm("file")
+            file_path = os.path.normpath(file_parm.eval())
+
+            items.append(
+                {
+                    "node": materialx_image_node.path(),
+                    "type": "materialx_image",
+                    "path": file_path,
+                }
             )
 
         return items
@@ -175,3 +189,10 @@ class BreakdownSceneOperations(Hook):
                     "Updating file node '%s' to: %s" % (node_path, file_path)
                 )
                 sublayer_node.parm("filepath1").set(file_path)
+
+            if node_type == "materialx_image":
+                materialx_image_node = hou.node(node_path)
+                engine.log_debug(
+                    "Updating materialx image node '%s' to: %s" % (node_path, file_path)
+                )
+                materialx_image_node.parm("file").set(file_path)
