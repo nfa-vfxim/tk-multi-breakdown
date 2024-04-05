@@ -122,6 +122,14 @@ class BreakdownSceneOperations(Hook):
                 }
             )
 
+            items.append(
+                {
+                    "node": materialx_image_node.path(),
+                    "type": "materialx_image",
+                    "path": os.path.dirname(file_path),
+                }
+            )
+
         return items
 
     def update(self, items):
@@ -195,4 +203,15 @@ class BreakdownSceneOperations(Hook):
                 engine.log_debug(
                     "Updating materialx image node '%s' to: %s" % (node_path, file_path)
                 )
-                materialx_image_node.parm("file").set(file_path)
+
+                if os.path.isfile(file_path):
+                    materialx_image_node.parm("file").set(file_path)
+
+                else:
+                    old_path = os.path.normpath(
+                        materialx_image_node.parm("file").eval()
+                    )
+                    old_path_basename = os.path.basename(old_path)
+                    materialx_image_node.parm("file").set(
+                        f"{file_path}/{old_path_basename}"
+                    )
