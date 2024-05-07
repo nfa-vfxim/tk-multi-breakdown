@@ -82,6 +82,16 @@ class BreakdownSceneOperations(HookBaseClass):
 
             reads.append({"node": node_name, "type": "Read", "path": path})
 
+        for node in nuke.allNodes("DeepRead"):
+
+            node_name = node.name()
+
+            # note! We are getting the "abstract path", so contains
+            # %04d and %V rather than actual values.
+            path = node.knob("file").value().replace("/", os.path.sep)
+
+            reads.append({"node": node_name, "type": "Read", "path": path})
+
         # then the read geometry nodes
         for node in nuke.allNodes("ReadGeo2"):
             node_name = node.name()
