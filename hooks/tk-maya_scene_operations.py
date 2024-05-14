@@ -95,7 +95,15 @@ class BreakdownSceneOperations(Hook):
                 engine.log_debug(
                     "Maya Reference %s: Updating to version %s" % (node, new_path)
                 )
-                cmds.file(new_path, loadReference=node)
+
+                if (
+                    os.path.splitext(new_path)[1] == ".usd"
+                    or os.path.splitext(new_path)[1] == ".usda"
+                ):
+                    cmds.file(new_path, loadReference=node, type="USD Import")
+
+                else:
+                    cmds.file(new_path, loadReference=node)
 
             elif node_type == "file":
                 # file texture node

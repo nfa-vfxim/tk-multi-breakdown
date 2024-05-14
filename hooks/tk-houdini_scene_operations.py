@@ -55,7 +55,7 @@ class BreakdownSceneOperations(Hook):
         ).instances()
 
         reference_nodes = hou.nodeType(
-            hou.lopNodeTypeCategory(), "reference"
+            hou.lopNodeTypeCategory(), "reference::2.0"
         ).instances()
 
         sublayer_nodes = hou.nodeType(hou.lopNodeTypeCategory(), "sublayer").instances()
